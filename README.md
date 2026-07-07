@@ -8,16 +8,16 @@
 
 ## ⭐ Major Discoveries & Engineering Wins
 
-If you are trying to reproduce high-quality 3DGS or SfM models of dynamic human subjects, these are the key discoveries and fixes found throughout this research. Detailed walkthroughs for each of these are documented in **[docs/CHALLENGES.md](docs/CHALLENGES.md)**.
+If you are trying to reproduce high-quality 3DGS or SfM models of dynamic human subjects, these are the key discoveries and fixes found throughout this research. Detailed walkthroughs for each of these are documented in **[CHALLENGES.md](CHALLENGES.md)**.
 
-| Focus Area | Discovery & Optimization | Practical Impact | Pipeline Stage |
+| Focus Area | Discovery & Optimization | Practical Impact | Pipeline Stage Guide |
 | :--- | :--- | :--- | :--- |
-| **Performance** | **H100 Tensor Core Fix:** Expand `block_size` from `2**13` to `2**19` and enable Mixed Precision (`use_amp=True`) in MASt3R's `sparse_ga.py`. | **~5× Speedup** on H100 GPUs (reducing loop count from 32 to 1 per pair). | [02_speedy_mast3r](docs/pipelines/02_speedy_mast3r.md) |
-| **Quality** | **Blur Pre-Filtering:** Apply Laplacian variance threshold check (drop frames with variance < 30) before committing to SfM. | **Loss dropped from 0.70 to 0.08** (visible noise artifacts eliminated). | [01_mast3r_sfm](docs/pipelines/01_mast3r_sfm.md) |
-| **Color Rendering** | **SH Transpose Fix:** Transpose Spherical Harmonics dimensions `(1, 2)` before flattening to export. | Solves **pink, wrong, or inverted colors** in web viewers (SuperSplat, Polycam). | [export_script](scripts/export/export_citygaussian_ply.py) |
-| **Scale / Nav** | **Origin Centering over Scale Modification:** Center coordinates at origin but do not scale logarithmic scale factors on checkpoint export. | Solves **invisible, microscopic, or clipped scenes** on import. | [03_citygaussian](docs/pipelines/03_citygaussian.md) |
-| **Distortion** | **`shared_intrinsics=False`:** Disable intrinsic camera parameters sharing on global alignment. | Prevents **cracks and holes in faces** when the subject rotates. | [01_mast3r_sfm](docs/pipelines/01_mast3r_sfm.md) |
-| **Structure** | **Pose Matrix Inversion:** Invert Camera-to-World poses to World-to-Camera for COLMAP sparse folders. | Fixes broken coordinate initializations for vanilla 3DGS. | [01_mast3r_sfm](docs/pipelines/01_mast3r_sfm.md) |
+| **Performance** | **H100 Tensor Core Fix:** Expand `block_size` from `2**13` to `2**19` and enable Mixed Precision (`use_amp=True`) in MASt3R's `sparse_ga.py`. | **~5× Speedup** on H100 GPUs (reducing loop count from 32 to 1 per pair). | [SPEEDY_MAST3R_GUIDE.md](SPEEDY_MAST3R_GUIDE.md) |
+| **Quality** | **Blur Pre-Filtering:** Apply Laplacian variance threshold check (drop frames with variance < 30) before committing to SfM. | **Loss dropped from 0.70 to 0.08** (visible noise artifacts eliminated). | [MAST3R_SFM_GUIDE.md](MAST3R_SFM_GUIDE.md) |
+| **Color Rendering** | **SH Transpose Fix:** Transpose Spherical Harmonics dimensions `(1, 2)` before flattening to export. | Solves **pink, wrong, or inverted colors** in web viewers (SuperSplat, Polycam). | [export_citygaussian_ply.py](export_citygaussian_ply.py) |
+| **Scale / Nav** | **Origin Centering over Scale Modification:** Center coordinates at origin but do not scale logarithmic scale factors on checkpoint export. | Solves **invisible, microscopic, or clipped scenes** on import. | [CITYGAUSSIAN_GUIDE.md](CITYGAUSSIAN_GUIDE.md) |
+| **Distortion** | **`shared_intrinsics=False`:** Disable intrinsic camera parameters sharing on global alignment. | Prevents **cracks and holes in faces** when the subject rotates. | [MAST3R_SFM_GUIDE.md](MAST3R_SFM_GUIDE.md) |
+| **Structure** | **Pose Matrix Inversion:** Invert Camera-to-World poses to World-to-Camera for COLMAP sparse folders. | Fixes broken coordinate initializations for vanilla 3DGS. | [MAST3R_SFM_GUIDE.md](MAST3R_SFM_GUIDE.md) |
 
 ---
 
@@ -38,7 +38,7 @@ Because dynamic subjects, hair detail, facial expressions, and panning cameras i
                      [ Blur Filtering (Laplacian) ]
                                   │ (Drop frames < 30 var)
                                   ▼
-                      [ Structure-from-Motion ]
+                       [ Structure-from-Motion ]
                                   │
          ┌────────────────────────┴────────────────────────┐
          ▼ (Primary)                                       ▼ (Alternative)
@@ -74,12 +74,12 @@ Because dynamic subjects, hair detail, facial expressions, and panning cameras i
 
 Our evaluations spanned 6 different model frameworks:
 
-* **[MASt3R-SfM](docs/pipelines/01_mast3r_sfm.md) (naver):** Video to camera poses + point cloud. (Status: **✅ Works beautifully**)
-* **[Speedy MASt3R](docs/pipelines/02_speedy_mast3r.md) (ASU):** Accelerating pairwise neural network inference. (Status: **✅ Works in hybrid cache mode**)
-* **[CityGaussian](docs/pipelines/03_citygaussian.md) (Linketic):** Joint pose refinement and fast splat training. (Status: **✅ Works with custom exporter**)
+* **[MASt3R-SfM](MAST3R_SFM_GUIDE.md) (naver):** Video to camera poses + point cloud. (Status: **✅ Works beautifully**)
+* **[Speedy MASt3R](SPEEDY_MAST3R_GUIDE.md) (ASU):** Accelerating pairwise neural network inference. (Status: **✅ Works in hybrid cache mode**)
+* **[CityGaussian](CITYGAUSSIAN_GUIDE.md) (Linketic):** Joint pose refinement and fast splat training. (Status: **✅ Works with custom exporter**)
 * **Vanilla 3DGS (gsplat MCMC):** Solid, reliable training benchmark. (Status: **✅ Works with ~1° pose error**)
-* **[Depth-Anything-3](docs/pipelines/05_depth_anything_3.md) (ByteDance):** Depth-based SfM alternative. (Status: **⚠️ Partial** - exhibits ghost geometry on humans)
-* **[3R-GS](docs/pipelines/04_3rgs.md):** Dynamic joint optimization. (Status: **❌ Blocked** - fails on portrait videos due to hardcoded % 512 match stride)
+* **[Depth-Anything-3](DEPTH_ANYTHING_3_GUIDE.md) (ByteDance):** Depth-based SfM alternative. (Status: **⚠️ Partial** - exhibits ghost geometry on humans)
+* **[3R-GS](3R_GS_GUIDE.md):** Dynamic joint optimization. (Status: **❌ Blocked** - fails on portrait videos due to hardcoded % 512 match stride)
 
 ---
 
@@ -107,22 +107,25 @@ If you would like to see, run, or test the resulting `.ply` or `.splat` files of
 
 ## 💻 Repository Structure
 
+Every pipeline guide and custom runner script has been brought directly to the root of the repository for immediate visibility and rapid access:
+
 ```
 3dgs-moments/
-├── docs/
-│   ├── CHALLENGES.md             # In-depth logs of solved issues and fixes
-│   ├── LIGHTNING_AI_SETUP.md     # Persistent studio setup, compilation, and gsplat help
-│   ├── REFERENCES.md             # Links to original academic papers & repos
-│   └── pipelines/
-│       ├── 01_mast3r_sfm.md      # Canonical MASt3R setup and guide
-│       ├── 02_speedy_mast3r.md   # Speedy integration and timing benchmark
-│       ├── 03_citygaussian.md    # CityGaussian joint pose training instructions
-│       ├── 04_3rgs.md            # Details of the 3R-GS portrait stride block
-│       └── 05_depth_anything_3.md# Depth-Anything-3 Streaming pipeline settings
-└── scripts/
-    ├── mast3r_sfm/               # Custom run scripts (progress bars, speedy hybrids, etc.)
-    └── export/
-        └── export_citygaussian_ply.py # Fixes SH order and centers coordinate system
+├── README.md                 # This narrative and summary
+├── CHALLENGES.md             # Detailed engineering log of all solved errors & fixes
+├── LIGHTNING_AI_SETUP.md     # Setup notes, GPU compilations, and dynamic environment guides
+├── REFERENCES.md             # Links to official publications and repositories
+│
+├── MAST3R_SFM_GUIDE.md       # Canonical MASt3R extraction & pose running guide
+├── SPEEDY_MAST3R_GUIDE.md    # Speedy integration & timing benchmarks
+├── CITYGAUSSIAN_GUIDE.md     # Joint pose training & viewer exporting guides
+├── 3R_GS_GUIDE.md            # Details on the 3R-GS portrait % 512 stride block
+├── DEPTH_ANYTHING_3_GUIDE.md # Alternative depth alignment & processing guide
+│
+├── run_quality.py            # Flagship pre-filtering & multi-conf SfM script
+├── speedy_hybrid_final.py    # Dual-repo fast inference & caching engine
+├── export_citygaussian_ply.py# Solves SH order color bugs and centers viewports
+└── run_*.py                  # Alternative helper runners and progress bar scripts
 ```
 
 ---
@@ -131,4 +134,4 @@ If you would like to see, run, or test the resulting `.ply` or `.splat` files of
 
 All scripts are configured to utilize path conventions native to **Lightning AI H100 Studios**. 
 
-Because `/teamspace/studios/this_studio/` is a persistent cluster mount that resolves identically for any user on any instance, **the scripts run as-is out-of-the-box inside Lightning AI**. You only need to clone the external repositories to this directory and activate the custom environment. Full setup guidelines are available in **[docs/LIGHTNING_AI_SETUP.md](docs/LIGHTNING_AI_SETUP.md)**.
+Because `/teamspace/studios/this_studio/` is a persistent cluster mount that resolves identically for any user on any instance, **the scripts run as-is out-of-the-box inside Lightning AI**. You only need to clone the external repositories to this directory and activate the custom environment. Full setup guidelines are available in **[LIGHTNING_AI_SETUP.md](LIGHTNING_AI_SETUP.md)**.
