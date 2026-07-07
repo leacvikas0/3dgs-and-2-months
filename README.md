@@ -56,8 +56,8 @@ Because dynamic subjects, hair detail, facial expressions, and panning cameras i
          ┌────────────────────────┴────────────────────────┐
          ▼ (Works)                                         ▼ (Blocked)
    [ CityGaussian Joint Opt ]                         [ 3R-GS Joint Opt ]
-   - MCMC-3DGS Config                                 - Fails on Portrait Stride (288)
-   - 30k Steps                                        - Hardcoded % 512 Stride Error
+   - MCMC-3DGS Config                                 - Fails converting COLMAP files
+   - 30k Steps                                        - Stride mismatch decoding error
          │
          ▼
    [ Final PLY Export Script ]
@@ -79,7 +79,7 @@ Our evaluations spanned 6 different model frameworks:
 * **[CityGaussian](CITYGAUSSIAN_GUIDE.md) (Linketic):** Joint pose refinement and fast splat training. (Status: **✅ Works with custom exporter**)
 * **Vanilla 3DGS (gsplat MCMC):** Solid, reliable training benchmark. (Status: **✅ Works with ~1° pose error**)
 * **[Depth-Anything-3](DEPTH_ANYTHING_3_GUIDE.md) (ByteDance):** Depth-based SfM alternative. (Status: **⚠️ Partial** - exhibits ghost geometry on humans)
-* **[3R-GS](3R_GS_GUIDE.md):** Dynamic joint optimization. (Status: **❌ Blocked** - fails on portrait videos due to hardcoded % 512 match stride)
+* **[3R-GS](3R_GS_GUIDE.md):** Dynamic joint optimization. (Status: **❌ Failed** - the translation script crashes converting standard COLMAP inputs to proprietary `.npy` formats)
 
 ---
 
@@ -114,12 +114,12 @@ Every pipeline guide and custom runner script has been brought directly to the r
 ├── README.md                 # This narrative and summary
 ├── CHALLENGES.md             # Detailed engineering log of all solved errors & fixes
 ├── LIGHTNING_AI_SETUP.md     # Setup notes, GPU compilations, and dynamic environment guides
-├── REFERENCES.md             # Links to official publications and repositories
+├── REFERENCES.md             # Links to original academic papers & repos
 │
 ├── MAST3R_SFM_GUIDE.md       # Canonical MASt3R extraction & pose running guide
 ├── SPEEDY_MAST3R_GUIDE.md    # Speedy integration & timing benchmarks
 ├── CITYGAUSSIAN_GUIDE.md     # Joint pose training & viewer exporting guides
-├── 3R_GS_GUIDE.md            # Details on the 3R-GS portrait % 512 stride block
+├── 3R_GS_GUIDE.md            # Details on the 3R-GS COLMAP-to-dataset conversion failure
 ├── DEPTH_ANYTHING_3_GUIDE.md # Alternative depth alignment & processing guide
 │
 ├── run_quality.py            # Flagship pre-filtering & multi-conf SfM script

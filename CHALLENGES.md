@@ -138,12 +138,17 @@ This document catalogs the exact engineering obstacles encountered while buildin
 
 ## Part 5: 3R-GS & Poses
 
-### Challenge 14: 3R-GS Portrait Stride Decoder Stalling (The Final Wall)
-* **Symptom:** Pose optimization during 3R-GS training diverges immediately, corrupting point clouds on vertical/portrait captures.
+### Challenge 14: 3R-GS COLMAP-to-Dataset Conversion Failure (The Major Blocker)
+* **Symptom:** Standard COLMAP outputs (`sparse/0/` directory containing standard camera models or binaries) fail to convert into usable `.npy` binary arrays for 3R-GS. 
+* **Cause:** The translation layer parser inside 3R-GS crashes when unpacking standard `.bin` cameras/images or when encountering variable distortion coefficients. It lacks the robust mapping logic required to translate SfM data without manual database editing.
+* **Solution:** Abandon 3R-GS pose optimization. Instead, utilize CityGaussian for Joint Pose Optimization (it accepts standard COLMAP directories natively), or use vanilla `gsplat` MCMC baseline training directly.
+
+### Challenge 15: 3R-GS Portrait Stride Decoder Corruption (The Secondary Blocker)
+* **Symptom:** If dataset arrays are manually compiled, pose optimization during portrait captures diverges instantly.
 * **Cause:** 3R-GS hardcodes a stride division of `512` internally to decode flattened pixel coordinates of correspondences. Portrait-oriented video captures use a compressed landscape width of `288` pixels internally in MASt3R, breaking decoding math.
 * **Solution:** Skip 3R-GS joint pose optimization. Initialize `gsplat` MCMC baseline training directly using the custom-formatted MASt3R-SfM camera poses and dense point cloud.
 
-### Challenge 15: MASt3R Cam-to-World Poses vs COLMAP World-to-Cam format
+### Challenge 16: MASt3R Cam-to-World Poses vs COLMAP World-to-Cam format
 * **Symptom:** Importing MASt3R poses directly into standard 3DGS environments puts the camera positions inside objects or shoots them off to infinity.
 * **Cause:** MASt3R generates Camera-to-World (C2W) transformation poses. COLMAP (`sparse/0/images.bin`) and standard 3DGS packages expect World-to-Camera (W2C) transformations.
 * **Solution:** Apply a matrix inversion to the 4x4 coordinate matrices during the COLMAP generation step.
