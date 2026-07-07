@@ -1,0 +1,49 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyd
+
+# Operating System Files
+.DS_Store
+Thumbs.db
+
+# Environments
+.env
+.venv
+venv/
+ENV/
+env/
+py310_env/
+
+# Virtual Machine & Local Temp files
+rclone.conf
+.idea/
+.vscode/
+
+# 3DGS & SfM Data Directories
+images/
+output/
+cache/
+results/
+mast3r_output/
+cabinet_output/
+cabinet_speedy_hybrid/
+moti_output/
+mitti2_3rgs/
+test_data/
+raw_data/
+data/
+
+# Heavy Assets & Trained Models
+*.ply
+*.splat
+*.pdf
+*.zip
+*.tar.gz
+*.pth
+*.pt
+*.ckpt
+*.npy
+*.db
+*.bin
