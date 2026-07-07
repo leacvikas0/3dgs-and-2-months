@@ -89,10 +89,10 @@ Quality results tracked by SfM global alignment loss (**< 0.1 = Excellent, < 0.5
 
 | Subject Clip | Clip Duration | Frames Tracked | Alignment Loss (Stage 1/2) | Visual Reconstruction Quality |
 | :--- | :---: | :---: | :---: | :--- |
-| **rakhi sitting** | 34s | 38 / 68 | **0.08 / 0.60** | ⭐⭐⭐ (Excellent, sharp contours) |
-| **rakhi** | 22s | 42 / 43 | **0.08 / 0.53** | ⭐⭐⭐ (Excellent facial contours) |
-| **yugtest** | 43s | 74 / 86 | 0.45 / 0.79 | ⭐⭐ (Good background, minor halo) |
-| **ishu** | 18s | 64 / 71 | 0.74 / 0.95 | ⭐ (Heavy noise, floating artifacts) |
+| **subject_sitting_red** | 34s | 38 / 68 | **0.08 / 0.60** | ⭐⭐⭐ (Excellent, sharp contours) |
+| **subject_standing_blue** | 22s | 42 / 43 | **0.08 / 0.53** | ⭐⭐⭐ (Excellent facial contours) |
+| **subject_outdoor_green** | 43s | 74 / 86 | 0.45 / 0.79 | ⭐⭐ (Good background, minor halo) |
+| **subject_panning_yellow** | 18s | 64 / 71 | 0.74 / 0.95 | ⭐ (Heavy noise, floating artifacts) |
 
 ---
 
